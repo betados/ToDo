@@ -54,7 +54,7 @@ def register():
             if password == password2:
                 # TODO comprobar que el user_name no exista ya
                 createUser(name, password)
-                renderTasks()
+                return redirect("/tasks")
             else:
                 flash('Las contraseñas no coinciden')
                 return render_template('register.html', form=form, link=None)
