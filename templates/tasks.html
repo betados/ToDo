@@ -1,3 +1,4 @@
+
 <!DOCTYPE html PUBLIC "a" "b">
 <meta charset="UTF-8"/>
 <html>
@@ -11,15 +12,32 @@
                 <p id="task{{i}}" onclick="deleteTask(id)"></p>
             {% endfor %}
 
-
+			<div id="div1"><h2>Adios!</h2></div> <!--Este Texto es el que va a cambiar con la respuesta del ajax-->
+			<button>AJAX!</button>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
             <script type="text/javascript">
-
-
+			$(document).ready(function(){
+			
+					$("button").click(function(){
+					$.ajax({
+						type: "GET",
+						url: "http://localhost:8080/",
+						contentType: "application/xml; charset=utf-8", 
+						success: function(data) {
+							$('#div1').text(data);
+							console.log("Todo very OK");
+						},
+						error: function(jqXHR, textStatus, errorThrown) {
+							console.log("Error"+errorThrown);
+						}
+					});     
+						 
+					});
+				});
                 function deleteTask(id) {
                     document.getElementById(id).style.color = "red";
                     <!--TODO meter llamada al back end para que la borre de la base de datos-->
                 }
-
                 function init(){
                     var tasksArray = document.getElementById("tasks").innerHTML.split(";");
                     <!--document.getElementById("salida").innerHTML = tasksArray;-->
@@ -27,16 +45,12 @@
                         printTask(tasksArray[i], i);
                     }
                 }
-
                 function printTask(t, i){
                     document.getElementById("task" + i).innerHTML = t;
-
                 }
                 init();
                 window.onclick();
-
                 <!--window.onload(init);-->
-
             </script>
 
             <form action="" method="post">
