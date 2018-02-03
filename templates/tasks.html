@@ -11,13 +11,14 @@
 
 <!--FIXME la funcion deleteTask no borra estas etiquetas-->
 {% for i in q %}
-<p id="task{{i}}" onclick="deleteTask(id)"></p>
+<p id="task{{i}}" onclick="deleteTask(id,this)"></p>
 {% endfor %}
 
 <script type="text/javascript">
 
 
-                function deleteTask(id) {
+                function deleteTask(id, elemento) {
+				
                     document.getElementById(id).style.color = "red";
                     var req = new XMLHttpRequest()
                     req.onreadystatechange = function(){
@@ -26,8 +27,10 @@
                                 //error handling code here
                             }
                             else{
+								 elemento.parentElement.removeChild(elemento);// se borra del dom si se ha borrado del servidor
                                 var response = JSON.parse(req.responseText)
                                 document.getElementById("tasks").innerHTML = response.tasks
+								console.log(response.tasks);
                                 init();
                             }
                         }
@@ -51,7 +54,7 @@
                 }
                 <!--init();-->
                 <!--window.onclick();-->
-                window.onload(init());
+                window.onload=init();
 
 </script>
 
