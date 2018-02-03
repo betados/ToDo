@@ -1,0 +1,47 @@
+<!DOCTYPE html PUBLIC "a" "b">
+<meta charset="UTF-8"/>
+<html>
+    <head>
+        <title>TODO LIST</title>
+    </head>
+        <body>
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    <ul>
+                        {% for message in messages %}
+                            <li>{{ message[1] }}</li>
+                        {% endfor %}
+
+                    </ul>
+                {% endif %}
+            {% endwith %}
+
+            {% if link != None %}
+            <a href="{{ link }}">visitar encuesta</a>
+            {% endif %}
+
+            <form action="" method="post">
+                {{ form.csrf }}
+
+                <div class="input text">
+                    {{ form.name.label }} {{ form.name }}
+                </div>
+                <div class="input text">
+                    {{ form.password.label }} {{ form.password }}
+                </div>
+                <div class="input text">
+                    {{ form.password2.label }} {{ form.password2 }}
+                </div>
+
+
+                <div class="input submit">
+                    <input type="submit" value="Registrarse" />
+                </div>
+            </form>
+            ¿Ya estás registrado?  <a href="/login">Logéate</a>
+            <!--<p><form action="/">-->
+                <!--<input type="submit" value="<- Home" />-->
+            <!--</form><p>-->
+
+        </body>
+</html>

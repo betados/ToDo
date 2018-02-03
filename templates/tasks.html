@@ -1,0 +1,55 @@
+<!DOCTYPE html PUBLIC "a" "b">
+<meta charset="UTF-8"/>
+<html>
+    <head>
+        <title>TODO LIST</title>
+    </head>
+        <body>
+            <p id="tasks" hidden="hidden">{{tasks}}</p>
+            <p id="salida" ></p>
+            {% for i in q %}
+                <p id="task{{i}}" onclick="deleteTask(id)"></p>
+            {% endfor %}
+
+
+            <script type="text/javascript">
+
+
+                function deleteTask(id) {
+                    document.getElementById(id).style.color = "red";
+                    <!--TODO meter llamada al back end para que la borre de la base de datos-->
+                }
+
+                function init(){
+                    var tasksArray = document.getElementById("tasks").innerHTML.split(";");
+                    <!--document.getElementById("salida").innerHTML = tasksArray;-->
+                    for (var i = 0; i < tasksArray.length; i++){
+                        printTask(tasksArray[i], i);
+                    }
+                }
+
+                function printTask(t, i){
+                    document.getElementById("task" + i).innerHTML = t;
+
+                }
+                init();
+                window.onclick();
+
+                <!--window.onload(init);-->
+
+            </script>
+
+            <form action="" method="post">
+                {{ form.csrf }}
+
+                <div class="input text">
+                    {{ form.description.label }} {{ form.description }}
+                </div>
+
+                <div class="input submit">
+                    <input type="submit" value="Crear nueva" />
+                </div>
+            </form>
+
+        </body>
+</html>
