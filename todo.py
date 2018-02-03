@@ -1,4 +1,4 @@
-from flask import Flask, render_template, flash, request, redirect
+from flask import Flask, render_template, flash, request, redirect, jsonify
 from wtforms import Form, TextAreaField, validators, StringField, PasswordField, IntegerField
 import sqlite3
 
@@ -19,8 +19,10 @@ class login_form(Form):
     name = StringField('Tu nombre:', validators=[validators.required()])
     password = PasswordField('Contraseña:  ', validators=[validators.required()])
 
+
 class new_task_form(Form):
-    description = TextAreaField('Descripción:', validators=[validators.required()])
+    description = StringField('Descripción:', validators=[validators.required()])
+    # description = TextAreaField('Descripción:', validators=[validators.required()])
 
 
 def createSqliteObj(path):
@@ -102,7 +104,6 @@ def getUserId(name, password):
         return None
 
 
-
 def selectTasks():
     print('SelectTasks, user_id:', user_id)
 
@@ -111,17 +112,28 @@ def selectTasks():
     try:
         tasks = c.fetchall()
         # flash(tasks)
-        print(tasks)
+        # print(tasks)
         q = [n for n in range(len(tasks))]
-        tasks = ['|'.join(task[2:-1]) for task in tasks]
-        tasks = ';'.join(tasks)
-        print(tasks)
-        return tasks, q
+        tasksStr = []
+        for task in tasks:
+            taskStr = [str(e) for e in task]
+            tasksStr.append(taskStr)
+        tasksStr = ['|'.join(taskStr) for taskStr in tasksStr]
+        tasksStr = ';'.join(tasksStr)
+        # print(tasks)
+        return tasksStr, q
     except Exception as e:
         print(e)
         flash('Aún no hay tareas')
         print('Aún no hay tareas')
         return None, 0
+
+def deleteTask(ident):
+    print('tarea donde has pinchado', ident)
+    conn, c = createSqliteObj('dataBase/dataBase.db')
+    values = (ident,)
+    c.execute('delete from tasks where id = ?', values)
+    conn.commit()
 
 
 @app.route("/tasks", methods=['GET', 'POST'])
@@ -175,6 +187,16 @@ def createUser(name, password):
         values = (1, name, password)
         c.execute('insert into users values (?, ?, ?)', values)
         conn.commit()
+
+
+@app.route('/ajax', methods=['POST'])
+def ajax():
+    task = request.form['task']
+    ident = task.split('|')[0]
+    deleteTask(ident)
+    tasks, q = selectTasks()
+    return jsonify(tasks=tasks, q=q)
+
 
 
 if __name__ == "__main__":

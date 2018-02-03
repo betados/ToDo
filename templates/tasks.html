@@ -1,46 +1,47 @@
-
 <!DOCTYPE html PUBLIC "a" "b">
 <meta charset="UTF-8"/>
 <html>
-    <head>
-        <title>TODO LIST</title>
-    </head>
-        <body>
-            <p id="tasks" hidden="hidden">{{tasks}}</p>
-            <p id="salida" ></p>
-            {% for i in q %}
-                <p id="task{{i}}" onclick="deleteTask(id)"></p>
-            {% endfor %}
+<head>
+    <title>TODO LIST</title>
+</head>
+<body>
+<p id="tasks" hidden="hidden">{{tasks}}</p>
+<p id="q" hidden="hidden">{{q}}</p>
+<p id="salida"></p>
 
-			<div id="div1"><h2>Adios!</h2></div> <!--Este Texto es el que va a cambiar con la respuesta del ajax-->
-			<button>AJAX!</button>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-            <script type="text/javascript">
-			$(document).ready(function(){
-			
-					$("button").click(function(){
-					$.ajax({
-						type: "GET",
-						url: "http://localhost:8080/",
-						contentType: "application/xml; charset=utf-8", 
-						success: function(data) {
-							$('#div1').text(data);
-							console.log("Todo very OK");
-						},
-						error: function(jqXHR, textStatus, errorThrown) {
-							console.log("Error"+errorThrown);
-						}
-					});     
-						 
-					});
-				});
+<!--FIXME la funcion deleteTask no borra estas etiquetas-->
+{% for i in q %}
+<p id="task{{i}}" onclick="deleteTask(id)"></p>
+{% endfor %}
+
+<script type="text/javascript">
+
+
                 function deleteTask(id) {
                     document.getElementById(id).style.color = "red";
+                    var req = new XMLHttpRequest()
+                    req.onreadystatechange = function(){
+                        if (req.readyState == 4){
+                            if (req.status != 200){
+                                //error handling code here
+                            }
+                            else{
+                                var response = JSON.parse(req.responseText)
+                                document.getElementById("tasks").innerHTML = response.tasks
+                                init();
+                            }
+                        }
+                    }
+                    req.open('POST', '/ajax')
+                    req.setRequestHeader("Content-type", "application/x-www-form-urlencoded")
+                    var postVars = "task="+document.getElementById(id).innerHTML
+                    req.send(postVars)
+                    return false
                     <!--TODO meter llamada al back end para que la borre de la base de datos-->
                 }
                 function init(){
                     var tasksArray = document.getElementById("tasks").innerHTML.split(";");
-                    <!--document.getElementById("salida").innerHTML = tasksArray;-->
+                    document.getElementById("salida").innerHTML = tasksArray;
                     for (var i = 0; i < tasksArray.length; i++){
                         printTask(tasksArray[i], i);
                     }
@@ -48,22 +49,23 @@
                 function printTask(t, i){
                     document.getElementById("task" + i).innerHTML = t;
                 }
-                init();
-                window.onclick();
-                <!--window.onload(init);-->
-            </script>
+                <!--init();-->
+                <!--window.onclick();-->
+                window.onload(init());
 
-            <form action="" method="post">
-                {{ form.csrf }}
+</script>
 
-                <div class="input text">
-                    {{ form.description.label }} {{ form.description }}
-                </div>
+<form action="" method="post">
+    {{ form.csrf }}
 
-                <div class="input submit">
-                    <input type="submit" value="Crear nueva tarea" />
-                </div>
-            </form>
+    <div class="input text">
+        {{ form.description.label }} {{ form.description }}
+    </div>
 
-        </body>
+    <div class="input submit">
+        <input type="submit" value="Crear nueva tarea"/>
+    </div>
+</form>
+
+</body>
 </html>
