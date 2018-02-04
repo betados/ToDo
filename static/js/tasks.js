@@ -19,3 +19,14 @@ function deleteTask(id, elemento) {
     req.send(postVars)
     return false
 }
+
+function detectCell(id, elemento){
+    if (id.split('-')[1] == 'borrar'){
+        document.getElementById(id).style.color = "red";
+    }
+    if (id.split('-')[1] == 'editar'){
+        document.getElementById(id).style.color = "green";
+    }
+
+
+}

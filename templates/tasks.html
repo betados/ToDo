@@ -29,10 +29,15 @@
 
 {% set filas = tasks.split(';') %}
 {% for fila in filas %}
+
 	{% set celdas = fila.split('|') %}
-	<tr id="task{{loop.index}}" onclick="deleteTask(id,this)"> <!-- la etiqueta "tr" son las filas de la tabla-->
+    {% set celdas = celdas + ['borrar', 'editar'] %}
+	<!--<tr id="task{{loop.index}}" onclick="deleteTask(id,this)"> &lt;!&ndash; la etiqueta "tr" son las filas de la tabla&ndash;&gt;-->
+	<tr id="task{{loop.index}}" > <!-- la etiqueta "tr" son las filas de la tabla-->
+    {% set outer_loop = loop %}
 		{% for celda in celdas %}
-			<td>{{celda}}</td> <!-- la etiqueta "td" son las celdas de cada fila-->
+			<!--<td>{{celda}}</td> &lt;!&ndash; la etiqueta "td" son las celdas de cada fila&ndash;&gt;-->
+			<td id="cell-{{celda}}-{{outer_loop.index}}" onclick="detectCell(id,this)">{{celda}} </td> <!-- la etiqueta "td" son las celdas de cada fila-->
 		{% endfor %}
 	</tr>
 {% endfor %}
