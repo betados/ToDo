@@ -14,20 +14,18 @@ function deleteTask(elemento) {
             }
         }
     }
-    req.open('POST', '/ajax')
+    req.open('POST', '/ajaxDeleteTask')
     req.setRequestHeader("Content-type", "application/x-www-form-urlencoded")
     var postVars = "task="+elemento.parentElement.parentElement.cells[0].innerHTML
     req.send(postVars)
     return false
 }
 
-function detectCell(id, elemento){
-    if (id.split('-')[1] == 'borrar'){
-        document.getElementById(id).style.color = "red";
-    }
-    if (id.split('-')[1] == 'editar'){
-        document.getElementById(id).style.color = "green";
-    }
-
-
-}
+//function detectCell(id, elemento){
+//    if (id.split('-')[1] == 'borrar'){
+//        document.getElementById(id).style.color = "red";
+//    }
+//    if (id.split('-')[1] == 'editar'){
+//        document.getElementById(id).style.color = "green";
+//    }
+//}

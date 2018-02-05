@@ -128,11 +128,17 @@ def selectTasks():
         print('Aún no hay tareas')
         return None, 0
 
-def deleteTask(ident):
-    print('tarea donde has pinchado', ident)
+def deleteTask(identifier):
+    print('tarea donde has pinchado', identifier)
     conn, c = createSqliteObj('dataBase/dataBase.db')
-    values = (ident,)
+    values = (identifier,)
     c.execute('delete from tasks where id = ?', values)
+    conn.commit()
+
+def editTask(identifier, field, value):
+    conn, c = createSqliteObj('dataBase/dataBase.db')
+    values = (value, identifier)
+    c.execute('UPDATE tasks SET ' + field + '=? WHERE id=?', values)
     conn.commit()
 
 
@@ -189,11 +195,20 @@ def createUser(name, password):
         conn.commit()
 
 
-@app.route('/ajax', methods=['POST'])
-def ajax():
+@app.route('/ajaxDeleteTask', methods=['POST'])
+def ajaxDeleteTask():
     task = request.form['task']
-    ident = task.split('|')[0]
-    deleteTask(ident)
+    identifier = task.split('|')[0]
+    deleteTask(identifier)
+    tasks, q = selectTasks()
+    return jsonify(tasks=tasks, q=q)\
+
+@app.route('/ajaxEditTask', methods=['POST'])
+def ajaxEditTask():
+    task = request.form['task']
+    data = task.split('|')
+    editTask(identifier=data[0], field=data[1], value=data[2])
+
     tasks, q = selectTasks()
     return jsonify(tasks=tasks, q=q)
 
