@@ -6,8 +6,17 @@
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+  <style>
+		#container{
+		max-width:1200px;
+		margin:auto;
+		}
+		
+</style>
 </head>
 <body>
+<div id="container">
+
 <p id="tasks" hidden="hidden">{{tasks}}</p>
 <p id="q" hidden="hidden">{{q}}</p>
 <p id="salida"></p>
@@ -22,6 +31,7 @@
 		<th>Descripción</th>
         <th>Estado</th>
         <th>Y</th>
+		<th>Acciones</th>
       </tr>
     </thead>
 	<tbody>
@@ -31,7 +41,6 @@
 {% for fila in filas %}
 
 	{% set celdas = fila.split('|') %}
-    {% set celdas = celdas + ['borrar', 'editar'] %}
 	<!--<tr id="task{{loop.index}}" onclick="deleteTask(id,this)"> &lt;!&ndash; la etiqueta "tr" son las filas de la tabla&ndash;&gt;-->
 	<tr id="task{{loop.index}}" > <!-- la etiqueta "tr" son las filas de la tabla-->
     {% set outer_loop = loop %}
@@ -39,12 +48,15 @@
 			<!--<td>{{celda}}</td> &lt;!&ndash; la etiqueta "td" son las celdas de cada fila&ndash;&gt;-->
 			<td id="cell-{{celda}}-{{outer_loop.index}}" onclick="detectCell(id,this)">{{celda}} </td> <!-- la etiqueta "td" son las celdas de cada fila-->
 		{% endfor %}
+			<td ><div onclick="deleteTask(this)" class="btn btn-danger btn-xs">Borrar <p class="glyphicon glyphicon-remove"></p> </div>&nbsp;<div class="btn btn-warning btn-xs"> Editar <p class="glyphicon glyphicon-pencil"></p></div></td>
+			
 	</tr>
 {% endfor %}
 
 
     </tbody>
   </table>
+  
 
 
 <script type="text/javascript" src="{{ url_for('static', filename='js/tasks.js') }}"></script>
@@ -53,15 +65,16 @@
 
 <form action="" method="post">
     {{ form.csrf }}
-
-    <div class="input text">
+<div>
+    <div style="float:left;" class="input text">
         {{ form.description.label }} {{ form.description }}
     </div>
 
-    <div class="input submit">
-        <input type="submit" value="Crear nueva tarea"/>
+    <div style="float:left;"  class="input submit">
+        <input class="btn btn-success" value="Crear nueva tarea" type="submit">
     </div>
+</div>
 </form>
-
+</div>
 </body>
 </html>
